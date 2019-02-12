@@ -50,7 +50,62 @@ SELECT col_name1, col_name2 FROM tablename WHERE (col_name1 = 'name1' OR col_nam
 SELECT col_name1, col_name2 FROM tablename WHERE col_name1 IN ('name1', 'name2') ORDER by col_name2;
 SELECT col_name1, col_name2 FROM tablename WHERE NOT col_name1 = 'name';
 
-WildCard Filtering
+WildCard Filtering(Match Parts of a Value) (Only Used in Text Field)
+Predicates / Operator
+%: SELECT col_name1, col_name2 FROM tablename WHERE col_name1 LIKE 'A%'; (filter data with string that start by 'A')
+    % matches any numbers of any occurance of any character
+    (sometimes * replace %, Microsoft ACCESS for example);
+SELECT col_name1, col_name2 FROM tablename WHERE col_name1 LIKE '%A%';
+SELECT col_name1, col_name2 FROM tablename WHERE col_name1 LIKE '%nyu%@gmail.com';
+(Except for NULL)
+_: SELECT col_name1, col_name2 FROM tablename WHERE col_name1 LIKE 'A_'; (filter data with string that theres one character following 'A')
+    _ matches 1 character
+    (sometimes ? replace %, Microsoft ACCESS for example);
+SELECT col_name1, col_name2 FROM tablename WHERE col_name1 LIKE 'A____';
+[]:SELECT col_name1 FROM tablename WHERE col_name1 LIKE '[JM]%'; (means a set of characters)
+[^]:SELECT col_name1 FROM tablename WHERE col_name1 LIKE '[^JM]%';(opposite from previous one)
+
+Creating Calculated Fields
+Concatenating: + or || (Join values together to form a single long value)
+SELECT col_name1 + ' (' + col_name2 + ')' FROM tablename ORDER BY col_name1;
+SELECT Concate(col_name1 , ' (' , col_name2 , ')') FROM tablename ORDER BY col_name1;(MySQL)
+SELECT RTRIM(col_name1) + ' (' + RTRIM(col_name2) + ')' FROM tablename ORDER BY col_name1;(Delete padded space of column value)
+Alias:AS (an alternate name for a new field)
+SELECT col_name1 + ' (' + col_name2 + ')' AS col_name3 FROM tablename ORDER BY col_name1;(if name has multiple words, use 'new_name')
+
+MatheMatics Calculation
+SELECT col_name1, colname_2, col_name1 * col_name2 AS col_name3 FROM tablename WHERE col_name = val;
+
+Using Data Manipulation Functions(Super DBMS specifics)
+Text / Numerical / Data and Time / System Information about DBMS
+Text:
+    LTRIM(); RTRIM(); UPPER(); LENGTH(); LEFT(); LOWER(); 
+Date and Time:
+ 
+Numerical:
+    ABS(); COS(); EXP(); PI(); SIN(); SQRT(); TAN();
+    
+Summarizing Data(Aggregating Function)
+    AVG(); (Ignore NULL)
+    COUNT(); (COUNT(*) counts NULL; COUNT(col_name) ignore NULL)
+    MAX(); 
+    MIN(); 
+    SUM();
+Aggregating on Distinct Value:
+ALL(default)/DISTINCT(Dont use with *)
+    SELECT AVG(DISTINCT col_name1) AS col_name2 FROM tablename WHERE NOT col_name1 IS NULL;
+    
+Grouping Data
+Group by:
+    SELECT col_name1, COUNT(*) AS col_name2 FROM tablename GROUP BY col_name1;
+    GROUP BY contains any columns you want; Every Column used in Group By should be used in SELECT, same Calculation;
+    NULL will be grouped as a new group; WHERE < GROUP BY < ORDER BY in position;
+Filtering Group: HAVING
+    SELECT col_name1, COUNT(*) AS col_name2 FROM tablename GROUP BY col_name1 HAVING COUNT(*) >= 2;
+    HAVING is after GROUP BY;
+    SELECT col_name1, COUNT(*) AS col_name2 FROM tablename WHERE col_name1 > val_1 GROUP BY col_name1 HAVING COUNT(*) > val_2;
+
+Working with Subqueries
 
 
 
