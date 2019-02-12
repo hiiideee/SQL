@@ -1,0 +1,60 @@
+Database: Container of organized data
+Tables: Structured list of data of specific type (not data type)
+        Name should be unique (database name + table name)
+Schema: Information about DB and table layouts and properties
+Columns[Field]: Single field in a table with a datatype
+Datatype: A type of allowed data
+Rows[Record]: A record in a table
+Primary Keys:(one or more) columns whose value uniquely define a row
+             Always define a primary key
+             unique
+             No null Value
+             Values in PK should never be updated or modified or reused
+
+Retrieving Data (Row Start in Row 0)
+SELECT col_name FROM tablename;
+SELECT col_name1, col_name2, col_name3 FROM tablename;
+SELECT * FROM tablename;
+SELECT DISTINCT col_name FROM tablename; (Cant be partially when applied to multi-columns)
+SELECT TOP 5 col_name FROM tablename; (Not equal for different SQL)
+SELECT col_name FROM tablename WHERE ROWNUM <= 5;
+SELECT col_name FROM tablename LIMIT 5 OFFSET 5;  or  LIMIT 5, 5;  (from n_1 to n_1 + n_2)
+-- or #(One Line Comments)
+/* */(Multi Lines Comments)
+
+Sorting Retrived Data
+SELECT col_name FROM tablename ORDER BY col_name; (ORDER BY should always be the lastest STATEMENT)
+SELECT col_name1, col_name2, col_name3 FROM tablename ORDER BY col_name1, col_name2;(First would be consider first)
+SELECT col_name1, col_name2, col_name3 FROM tablename ORDER BY 2, 3;(Column position, start from 1)
+SELECT col_name FROM tablename ORDER BY col_name DESC; (in descending order z to a; default is ASC)
+SELECT col_name FROM tablename ORDER BY col_name1 DESC, col_name2;(DESC only apply to the col_name that precede it)
+
+Filtering Data
+SELECT col_name1, col_name2 FROM tablename WHERE col_name1 = val;
+    =(equal);
+    <>/!=(not equal);
+    <(larger);
+    <=(not larger than);
+    !<(not less than);
+    BETWEEN;
+    IS NULL;
+SELECT col_name1, col_name2 FROM tablename WHERE col_name1 <> 'name';
+SELECT col_name1, col_name2 FROM tablename WHERE col_name1 BETWEEN 5 AND 10;
+SELECT col_name1, col_name2 FROM tablename WHERE col_name1 IS NULL;
+
+Advanced Data Filtering
+SELECT col_name1, col_name2 FROM tablename WHERE col_name1 = 'name' AND col_name2 <> val;
+SELECT col_name1, col_name2 FROM tablename WHERE col_name1 = 'name' OR col_name2 <> val;
+###In SQL, AND is before OR###
+SELECT col_name1, col_name2 FROM tablename WHERE (col_name1 = 'name1' OR col_name1 = 'name2') AND col_name2 <> val;
+SELECT col_name1, col_name2 FROM tablename WHERE col_name1 IN ('name1', 'name2') ORDER by col_name2;
+SELECT col_name1, col_name2 FROM tablename WHERE NOT col_name1 = 'name';
+
+WildCard Filtering
+
+
+
+
+
+
+
