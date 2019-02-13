@@ -106,6 +106,33 @@ Filtering Group: HAVING
     SELECT col_name1, COUNT(*) AS col_name2 FROM tablename WHERE col_name1 > val_1 GROUP BY col_name1 HAVING COUNT(*) > val_2;
 
 Working with Subqueries
+Query: Any STATEMENT / SubQuery: Queries embedded into other Queries (start from innermost to outter)
+Filtering By Subqueries:
+    #we want the customer id who ordered item 0001
+    1.SELECT num FROM order WHERE item = '0001';
+    2.SELECT cust_id FROM customer WHERE num IN (result above);
+    #Combine them:
+    SELECT cust_id FROM customer WHERE num IN (SELECT num FROM order WHERE item = '0001')
+    Subquery SELECTION ONLY return single column
+Using Subqueries as Calculated Field:
+    #Display total number of orders placed by every customer
+    1.SELECT COUNT(*) FROM customer WHERE cust_id = '???';
+    ...
+    #Combine them:
+    SELECT cust_name, cust_state, (SELECT COUNT(*) FROM order WHERE order.cust_id = customer.cust_id) AS cust_order FROM customer Order BY cust_name;
+    
+Joining Tables
+Relational Tables: Information are splited into several tables, one for each data type, and tables are related through common value
+Join: Retrieve Data from rational tables with a single SELECT STATEMENT
+    SELECT vend_name, prod_name, prod_price FROM Vendors, Products WHERE Vendors.vend_id = Products.vend_id;
+Cross Join: Join without WHERE, so theres a multi-multi relation between two tables
+Inner Join:(Same as standard Join)
+    SELECT vend_name, prod_name, prod_price FROM Vendors INNER JOIN Products ON Venders.vend_id = Products.vend_id;
+Joining Multiple Tables:
+    SELECT A_1, A_2, B_1, C_1 FROM A, B, C WHERE A.common = B.common AND B.cooo = C.cooo;
+    
+Creating Advanced Joins
+
 
 
 
