@@ -132,11 +132,69 @@ Joining Multiple Tables:
     SELECT A_1, A_2, B_1, C_1 FROM A, B, C WHERE A.common = B.common AND B.cooo = C.cooo;
     
 Creating Advanced Joins
+Using Table Aliases:
+    SELECT cust_id, cust_num FROM Customer AS C, Orders AS O, OrderItems AS OI WHERE C.num = O.num AND O.items = OI.items AND items = '01';
+Using Different Join Types:
+Self Join:
+    SELECT id, name, contact FROM Customer WHERE name = (SELECT name FROM Customer WHERE contact = 'J');
+    SELECT c1.id, c1.name, c1.contact FROM Customer AS c1, Customer AS c2 WHERE c1.name = c2.name AND c2.contact = 'J';
+Natural Join:
+    SELECT C.*, O.item, O.date, OI.id, OI.q, OI.price FROM Customer AS C, Orders AS O, OrderItem As OI WHERE C.id = O.id AND OI.num = O.num AND id = 'Id';
+Outer Join: Join include table rows that have no associated rows in the related table
+    SELECT Customer.id, Order.item FROM Customer LEFT OUTER JOIN Orders ON Customer.id = Order.id;
+    SELECT Customer.id, Order.item FROM Customer FULL OUTER JOIN Orders ON Customer.id = Order.id;
+Join with Aggregate Functions:
+    SELECT Customer.id, COUNT(Order.item) AS Item FROM Customer INNER JOIN Orders ON Customer.id = Order.id GROUP BY Customer.id;
+    
+Combining Queries:(Use UNION to combine multiple SELECT Statement to one result set)
+Creating Combined Queries:
+    1.SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_4 IN ('a', 'z');
+    2.SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_1 = 'name';
+    Combine:
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_4 IN ('a', 'z')
+    UNION
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_1 = 'name';
+    Which is Same as :
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_1 = 'name' OR 1_col_4 IN ('a', 'z');
+    
+    Rules:
+    A UNION has two or more SELECT STATEMENT, each seperated by UNION;
+    Each query in a UNION must contain same columns, expressions or aggregate functions;
+    Datatype should be compatible;
+Including / Eliminating Duplicate Rows(Default):
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_4 IN ('a', 'z')
+    UNION ALL
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_1 = 'name';
+Sorting Combined Queries Result:(Must occur after the Final SELECT Statement)
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_4 IN ('a', 'z')
+    UNION
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_1 = 'name'
+    ORDER BY 1_col_1, 1_col_2;
+Union Except:(contains former queries which are not in latter query)
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_4 IN ('a', 'z')
+    UNION EXCEPT
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_1 = 'name';
+Union Except:(Intersect Set)
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_4 IN ('a', 'z')
+    UNION INTERSECT
+    SELECT 1_col_1, 1_col_2, 1_col_3 FROM table_1 WHERE 1_col_1 = 'name';
 
+Inserting Data:INSERT(add row to database) --- partial row / complete row / a result query
+Complete Row:
+    INSERT INTO tablename VALUES('v_1', 'v_2', 'v_3', 'str_1', 'str_2', NULL, 'date_1'); (must be in order)
+    INSERT INTO tablename(col_1, col_2, col_3, col_4, col_5) VALUES('v_1', 'v_2', 'str_1', NULL, 'date_1' );(this is better)
+Partial Row:
+    INSERT INTO tablename(col_1, col_2) VALUES('v_1', 'date_1' ); (The missing columns allow NULL or have default value)
+Inserting Retrieved Data:
+    INSERT INTO new_table(col_1, col_2) SELECT col_1, col_2 FROM old_table;(if PK duplicate for two table, fail for INSERT)
+Copying from One Table to Another:SELECT INTO
+    SELECT * INTO copytable FROM table;
+    CREATE TABLE copytable AS SELECT * FROM table;
+    (data only will be copied into one table)
 
+Updating and Deleting Data:
 
-
-
+     
 
 
 
