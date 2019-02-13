@@ -193,8 +193,164 @@ Copying from One Table to Another:SELECT INTO
     (data only will be copied into one table)
 
 Updating and Deleting Data:
+Updating Data: UPDATE --- specific rows / all rows
+    UPDATE tablename SET col_2 = 'val' WHERE col_1 = 'condition';
+    UPDATE tablename SET col_1 = 'val_1' , col_2 = 'val_2' WHERE col_3 = 'condition';
+Deleting Data: DELETE --- specific rows / all rows
+    UPDATE tablename SET col_1 = NULL;(if the table allow NULL)
+    DELETE FROM tablename WHERE col_1 = 'condition';
+    #Delete dont accept wildcard or column names;
+    TRUNCATE TABLE tablename; (delete all)
+    
+    Guideline:
+    Always use WHERE unless for every row;
+    Make sure every table has a PK and use it as WHERE clause;
+    Use SELECT before use UPDATE / DELETE to make the records right;
+    
+Creating / Manipulating Tables
+Creating Table: CREATE TABLE (new name + colnumn name and definition + /location or not/)
+    CREATE TABLE tablename
+    (
+    col_1 CHAR(10) NOT NULL,
+    col_2 CHAR(254) NOT NULL,
+    col_3 DEMICAL(8, 2) NULL,
+    col_4 VARCHAR(1000) NULL,
+    col_5 INTEGAR NOT NULL,
+    col_6 DATETIME NOT NULL
+    );
+    #Dont use CREATE TABLE to replace existing table with same name; remove the older one first
+    #If allow NULL, dont need to code that; but it depends
+    CREATE TABLE tablename
+    (
+    col_num INTEGAR NOT NULL DEFAULT 1;
+    col_date DATETIME NOT NULL DEFAULT CURRENT_TIME()
+    );
+Updating Table: ALTER TABLE (exist table name + list of change)
+    ALTER TABLE tablename ADD col_new CHAR(20);
+    ALTER TABLE tablename DROP COLUMN col_1;
+Deleting Table: DROP TABLE
+    DROP TABLE tablename
+Renaming Table: RENAME
 
-     
+Using Views (virtual tables, only contain queries that dynamically retrieve data when used)
+Rules and Restrictions:
+    Views must be uniquely named;(cant be same as table)
+    No limit to the number of Views create;
+    Can be nested;
+    Many DBMS prohibit the use of ORDER BY;
+    Some DBMS requires that every column returned should be named;
+    Cant be indexed;
+Drop Views: DROP VIEW
+    DROP VIEW viewname;
+Creating Views: CREATE VIEW
+    CREATE VIEW viewname AS 
+    SELECT col_1, col_2, col_3
+    FROM table_1, table_2
+    WHERE table_1.id = table_2.id;
+    #Then
+    SELECT col_1 FROM viewname;
+Using Views to Reformat Retrieved Data:
+    SELECT RTRIM(col_1) + ' (' + RTRIM(col_2) + ')' AS col_new FROM tablename ORDER BY col_1;
+    #View
+    CREATE VIEW viewname AS
+    SELECT RTRIM(col_1) + ' (' + RTRIM(col_2) + ')' AS col_new FROM tablename;
+    SELECT * FROM viewname;
+Using Views to Filter Unwanted Date:
+    CREATE VIEW viewname AS
+    SELECT col_1, col_2
+    FROM tablename
+    WHERE col_1 IS NOT NULL;
+    SELECT * FROM viewname;
+Using Views to Calculated Field:
+    CREATE VIEW viewname AS
+    SELECT col_1, col_2, col_1 * col_3 AS col_4 FROM tablename;
+    SELECT * FROM viewname WHERE col_1 = val;
 
+Stored Procedures: collection of SQL statements for future use
+Executing Stored Procedures: EXECUTE
+    EXECUTE procedurename('str', 'val', 'date');
+    Ensuring every parameter has value;
+    PK should be generate automatically;
+    Out-of-order parameter should use parameter = value;
+Creating Stored Procedures: CREATE PROCEDURE - BEGIN - END
+    ###Oracle Version-------------------------------
+    CREATE PROCEDURE procedurename (parameter OUT INTEGAR) #OUT means pass the value back from the procedure / IN / INOUT
+    IS variable INTEGAR;
+    BEGIN
+    SELECT COUNT(*) INTO variable
+    FROM tablename
+    WHERE NOT col_1 IS NULL;
+    parameter := variable;
+    END;
+    
+    var ReturnValue NUMBER
+    EXEC procedurename(:ReturnValue)
+    SELECT ReturnValue;
+    ###Microsoft SQL------------------------------
+    CREATE PROCEDURE procedurename
+    AS
+    DECLARE @variable INTEGAR
+    SELECT @variable = COUNT(*)
+    FROM tablename
+    WHERE NOT col_1 IS NULL;
+    RETURN @variable;
+    
+    DECLARE @ReturnValue INT
+    EXECUTE @ReturnValue = procedurename;
+    SELECT @ReturnValue;
+    
+    -------------
+    CREATE PROCEDURE neworder @id CHAR(10) #There is the parameter
+    AS
+    DECLARE @order_num INTEGAR   #declare variable started by @
+    SELECT @order_num = MAX(order_num) #later one is a column; assign the variable with the highest value in this column
+    FROM Order
+    SELECT @order_num = @order_num + 1
+    INSERT INTO Orders(order_num, order_date, order_id)
+    VALUES(@order_num, GETDATE(), @id)
+    RETURN @order_num;
+    ---------------
+    CREATE PROCEDURE neworder @id CHAR(10)
+    AS
+    INSERT INTO Orders(id)      
+    VALUES(@id)
+    SELECT order_num = @@IDENTITY;
+
+Managing Transaction Processing
+Transaction : a bunch of STATEMENT
+Rollback : Process of undoing specific STATEMENT #cant rollback CREATE/DROP/SELECT
+Commit : Writing unsaved STATEMENT to DB tables
+Savepoint : Temporary placeholder in a transaction set to which you can issue a rollback        
+Controling Transaction: BEGIN/START/SET TRANSACTION ... END TRANSACTION
+Using Rollback:
+    DELETE FROM Orders;
+    ROLLBACK;
+Using Commit:
+    ###SQL-------------------------------
+    BEGIN TRANSACTION
+    DELETE Order WHERE num = val
+    DELETE Customer WHERE num = val
+    COMMIT TRANSACTION #only commit after the above statements succeed
+    ###Oracle----------------------------
+    SET TRANSACTION
+    DELETE Order WHERE num = val;
+    DELETE Customer WHERE num = val;
+    COMMIT
+Using Savepoint:
+    SAVEPOINT point_1;
+    ROLLBACK TRANSACTION point_1; / ROLLBACK TO point_1;
+Summary:
+    BEGIN TRANSACTION
+    INSERT INTO Customer(id, name) VALUES('3071', 'Toby');
+    SAVEPOINT orderstart;
+    INSERT INTO Order(order_num, order_date, id) VALUES(10, '2019/2/13', '3071');
+    IF @@ERROR <> 0 ROLLBACK TRANSACTION orderstart;
+    INSERT INTO OrderItem(order_num, order_item, prod_id, quant, price) VALUES(10, 1, 'OO1', 10, 5.00)
+    IF @@ERROR <> 0 ROLLBACK TRANSACTION orderstart;
+    COMMIT TRANSACTION
+    
+Using Cursors
+
+    
 
 
