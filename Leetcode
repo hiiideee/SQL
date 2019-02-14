@@ -18,5 +18,17 @@ SELECT * FROM cinema
 WHERE MOD(id, 2) = 1  AND description <> 'boring'
 ORDER BY rating DESC;
 
+###Duplicate Emails ----------------------------------------
+SELECT Email FROM
+(
+SELECT Email, COUNT(*) AS Number FROM Person 
+GROUP BY Email
+) AS Person_Number
+WHERE Number > 1;
+-------------------------------------------------------
+SELECT Email FROM Person
+GROUP BY Email HAVING COUNT(Email) > 1; 
+
+###Combine Two Tables-----------------------------------------
 
 
