@@ -349,8 +349,133 @@ Summary:
     IF @@ERROR <> 0 ROLLBACK TRANSACTION orderstart;
     COMMIT TRANSACTION
     
-Using Cursors
-
+Using Cursors : Step through rows forward or backword for several steps, working on DBMS server not SELECT Statement
+Result Set: the result retrieved by SQL query
+Steps:
+    Declare Cursor, which defines the SELECT Statement to be used;
+    Cursor open for use, retrieving data using the SELECT Statement;
+    With Cursor populating the Data, rows can be fetched as needed;
+    Close Cursor, deallocating(if allow);
+Creating Cursor:
+    ###SQL--------------
+    DECLARE cursorname CURSOR
+    FOR
+    SELECT * FROM customer
+    WHERE email IS NULL;
+    ###ORACLE--------------
+    DECLARE CURSOR cursorname
+    IS
+    SELECT * FROM customer
+    WHERE email IS NULL;
+Using Cursor:
+    #Open
+    OPEN CURSOR cursorname;
+    #Fetch
+    ###Oracle----------------(get one single row(it will be the first row))
+    DECLARE TYPE cursorname IS REF CURSOR
+    RETURN customer%ROWTYPE;
+    DECLARE CustRecord customer%ROWTYPE
+    BEGIN
+    OPEN cursorname;
+    FETCH cursorname INTO CustRecor;
+    CLOSE cursorname;
+    END
+    ###Oracle----------------(loop)
+    DECLARE TYPE cursorname IS REF CURSOR
+    RETURN customer%ROWTYPE;
+    DECLARE CustRecord customer%ROWTYPE
+    BEGIN
+    OPEN cursorname;
+    LOOP
+    FETCH cursorname INTO CustRecor;
+    EXIT WHEN cursorname%NOTFOUND;
+    END LOOP
+    CLOSE cursorname;
+    END
+    ###SQL---------------------
+    DECLARE @id CHAR(10), @name CHAR(50), @email CHAR(250)
+    OPEN cursorname
+    FETCH NEXT FROM cursorname
+    INTO @id, @name, @email
+    WHILE @@FETCH_STATUE = 0
+    BEGIN
+    FETCH NEXT FROM cursorname
+    INTO @id, @name, @email
+    END
+    CLOSE cursorname
+Closing Cursor:
+    ###Oracle---------------
+    CLOSE cursorname;
+    ###SQL ------------------
+    CLOSE cursorname
+    DEALLOCATE CURSOR cursorname
     
+Advanced SQL Features (constraints / indexes / triggers)
+Constraints: Rules govern how DB is inserted or manipulated
+Primary Key:
+    CREATE TABLE tablename
+    (
+    col_1 CHAR(10) NOT NULL PRIMARY KEY,
+    col_2 NUMERICAL NOT NULL
+    );
 
+    ALTER TABLE tablename
+    ADD CONSTRAINT PRIMARY KEY (col_name);
+Foreign Key:
+    CREATE TABLE orders
+    (
+    num INTEGAR NOT NULL PRIMARY KEY,
+    data DATETIME NOT NULL,
+    cust_id CHAR(10) NOT NULL REFERENCES Customer(cust_id)
+    );
+    
+    ALTER TABLE order
+    ADD CONSTRAINT
+    FOREIGN KEY (cust_id) REFERENCES Customer(cust_id)
+Unique Constraint:(ensure all data in a column is unique)
+    1 PK per table, multiple Unique Constraints allowed;
+    Unique Constraints allow NULL, can be modified and updated and reused;
+    Cant be used to define Foreign Key;
+    CREATE TABLE orders
+    (
+    num INTEGAR NOT NULL PRIMARY KEY,
+    cust_id CHAR(10) UNIQUE
+    );
+Check Constraints:(ensure the data in a column meets a set of criteria we specify)
+    Range of the value;
+    Specify only certain values;
+    CREATE TABLE tablename
+    (
+    num INTEGAR NOT NULL,
+    Q INTEGAR NOT NULL CHECK (Q > 0)
+    );
 
+    ADD CONSTRAINT CHECK (col_1 LIKE '[MF]')
+Using Indexes: (When sort by PK, DBMS itself is efficient, but for other columns, Indexes are better)
+    Index increase Retrieving operation but decrease Insertion / Modification / Deletion;
+    Take up a lot of storage;
+    Mostly used for those columns that are sorted very often;
+    Multiple columns can be defined in 1 index;
+    CREATE INDEX name_ind ON customer(name);
+Using Triggers:(special stored procedures that are executed automatically when specific events happen)
+    Triggers are tied to individual tables;
+    Trigger associated with certain Statement will only work for that SELECT data;
+    Use Constraints before Triggers, which are slower;
+    ###SQL----------------------------
+    CREATE TRIGGER customer_state ON customer
+    FOR INSERT, UPDATE
+    AS
+    UPDATE customer
+    SET cust_state = UPPER(cust_state)
+    WHERE customer.id = inserted.id
+    ###Oracle--------------------------
+    CREATE TRIGGER customer_state
+    AFTER INSERT OR UPDATE
+    FOR EACH ROW
+    BEGIN
+    UPDATE customer
+    SET cust_state = UPPER(cust_state)
+    WHERE customer.id = inserted.id
+    END;
+    
+    
