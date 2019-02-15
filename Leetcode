@@ -60,3 +60,13 @@ GROUP BY class HAVING COUNT(DISTINCT student) >= 5;
 #Rising Temperature--------------------------
 SELECT W1.Id FROM Weather As W1 JOIN Weather As W2
 ON DATEDIFF(W1.RecordDate, W2.RecordDate) = 1 AND W1.Temperature > W2.Temperature;
+
+#Delete Duplicate Emails---------------------------
+DELETE FROM Person WHERE Id IN 
+(SELECT A.Id FROM (SELECT * FROM Person) AS A, (SELECT * FROM Person) AS B WHERE A.Id > B.Id AND A.Email = B.Email);
+-------------------------------
+DELETE p1 FROM Person AS p1, Person AS p2 WHERE p1.Email = p2.Email AND p1.Id > p2.Id;
+--------------------------------------------------
+DELETE p1 FROM Person p1 JOIN Person p2 
+on p1.Email = p2.Email AND p1.ID > p2.ID；
+
