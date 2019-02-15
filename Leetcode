@@ -33,10 +33,15 @@ GROUP BY Email HAVING COUNT(Email) > 1;
 SELECT Person.FirstName, Person.LastName, Address.City, Address.State
 FROM Person LEFT JOIN Address ON Person.PersonID = Address.PersonID;
 
-#Employees Earning More Than Managers
+#Employees Earning More Than Managers-----------------------------------------
 SELECT A.Name AS Employee FROM Employee AS A INNER JOIN Employee AS B
 ON A.ManagerId = B.Id AND A.Salary > B.Salary;
-
+-----------------------------------------------------------
 SELECT a.Name AS 'Employee'
 FROM Employee AS a, Employee AS b
 WHERE a.ManagerId = b.Id AND a.Salary > b.Salary;
+
+#Customers Who Never Order--------------------------------------
+SELECT Name AS Customers FROM Customers
+WHERE NOT Customers.Id IN (SELECT CustomerId FROM Orders);
+
