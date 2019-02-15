@@ -45,3 +45,14 @@ WHERE a.ManagerId = b.Id AND a.Salary > b.Salary;
 SELECT Name AS Customers FROM Customers
 WHERE NOT Customers.Id IN (SELECT CustomerId FROM Orders);
 
+#Classes More Than 5 Students---------------------------------------
+SELECT class FROM (SELECT class, COUNT(*) AS stu 
+FROM (SELECT DISTINCT * FROM courses) AS newcourse 
+GROUP BY class) AS counting
+WHERE stu >= 5;
+-------------------------------------------
+SELECT class
+FROM (SELECT class, COUNT(DISTINCT student) AS counting FROM courses GROUP BY class) AS temp_table
+WHERE counting >= 5;
+SELECT class FROM courses
+GROUP BY class HAVING COUNT(DISTINCT student) >= 5;
