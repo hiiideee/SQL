@@ -56,3 +56,7 @@ FROM (SELECT class, COUNT(DISTINCT student) AS counting FROM courses GROUP BY cl
 WHERE counting >= 5;
 SELECT class FROM courses
 GROUP BY class HAVING COUNT(DISTINCT student) >= 5;
+
+#Rising Temperature--------------------------
+SELECT W1.Id FROM Weather As W1 JOIN Weather As W2
+ON DATEDIFF(W1.RecordDate, W2.RecordDate) = 1 AND W1.Temperature > W2.Temperature;
